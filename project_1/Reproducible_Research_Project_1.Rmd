@@ -39,7 +39,7 @@ unzip("repdata%2Fdata%2Factivity.zip",exdir = "data")
 
 ## Reading csv Data into Data.Table. 
 ```{r}
-activityDT <- data.table::fread(input = "data/activity.csv")
+activityDT <- data.table::fread(input = "F:/Github/05_reproducible_researc/project_1/data/activity.csv")
 ```
 
 ## What is mean total number of steps taken per day?
@@ -129,7 +129,7 @@ Second Part (fillin in na with median) | 9354.23 | 10395
 
 ```{r}
 # Just recreating activityDT from scratch then making the new factor variable. (No need to, just want to be clear on what the entire process is.) 
-activityDT <- data.table::fread(input = "data/activity.csv")
+activityDT <- data.table::fread(input = "F:/Github/05_reproducible_researc/project_1/data/activity.csv")
 activityDT[, date := as.POSIXct(date, format = "%Y-%m-%d")]
 activityDT[, `Day of Week`:= weekdays(x = date)]
 activityDT[grepl(pattern = "Monday|Tuesday|Wednesday|Thursday|Friday", x = `Day of Week`), "weekday or weekend"] <- "weekday"
@@ -144,5 +144,6 @@ head(activityDT, 10)
 activityDT[is.na(steps), "steps"] <- activityDT[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
 IntervalDT <- activityDT[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval, `weekday or weekend`)] 
 
-ggplot(IntervalDT , aes(x = interval , y = steps, color=`weekday or weekend`)) + geom_line() + labs(title = "Avg. Daily Steps by Weektype", x = "Interval", y = "No. of Steps") + facet_wrap(~`weekday or weekend` , ncol = 1, nrow=2)
+
+ggplot(activityDT , aes(x = interval , y = steps, color=`weekday or weekend`)) + geom_line() + labs(title = "Avg. Daily Steps by Weektype", x = "Interval", y = "No. of Steps") + facet_wrap(~`weekday or weekend` , ncol = 1, nrow=2)
 ```
